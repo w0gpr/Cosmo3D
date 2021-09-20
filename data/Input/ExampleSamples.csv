@@ -1,0 +1,3 @@
+ID,Conc,Sigma,Pspal,Pmuon,xLocStart,xLocEnd,yLocStart,yLocEnd,Lat,Lon,Alt,atm,water,nuclide
+Examples,40000,400,4,0.1,0,-5,0,2,42,-73,100,0,-1,10
+,atoms/gram,atoms/gram,atoms/gram/year,atoms/gram/year,cm,cm,cm,cm,Decimal degrees,Decimal Degrees,meters above mean sea level,0 = not specified,-1 = not accounted for,10 is for Be-10
