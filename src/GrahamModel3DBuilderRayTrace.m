@@ -83,7 +83,7 @@ abradedDepthSolved = log(SpMeasured)*-160/rho;
 %% Init abrasion depth guess and figure 5
 abrasionDepth = 2.75;  % depth of abrasion in cm
 
-makeFigures = false;
+makeFigures = true;
 %% Build the surface model
 % x1 = [-1 0 481 821 1126 1127]; y1 = [-301 -300 300 301];
 % z1 = [100 100 220 220];
