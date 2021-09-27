@@ -3,15 +3,24 @@ clear
 rng('shuffle')
 % rng(4096)
 
-tic
-% sm = 1;
+lambda = 4.99e-7; % decay rate
+tExpose = 7200; % duration of exposure - years, 
+% tBurial = 500; % years
+rho = 2.65;      % sample density
+LambdaP = 208;  % g/cm^2 from Gosse and Phillips 2001
+LambdaM = 1145; % double check this... this is from memory for testing
 
+% tic
+% sm = 1;
+makeFigures = true; % Make the 3D and 2D models
+plotResults = true; % Show the chi^2 results
 %% Read in sample data
 % This section reads in the data from the .csv and then rotates the datum.
 % It is done in a way that is dynamic and allows for buffers to be
 % increased or decreased
 data = readtable('Camp3Samples.csv');
-sampleID = data{1:8,1};
+numSamples = 8;
+sampleID = data{1:numSamples,1};
 D = data{1:8,2:end};
 abradePluckContact = 340;   % cm from base
 wallHeight = 120;           % cm
@@ -30,12 +39,7 @@ Pspal = D(1,3);
 Pmuon = D(1,4);
 xSamp = D(:,5:6);
 zSamp = D(:,7:8);
-lambda = 4.99e-7; % decay rate
-tExpose = 7200; % duration of exposure - years, 
-% tBurial = 500; % years
-rho = 2.65;      % sample density
-LambdaP = 208;  % g/cm^2 from Gosse and Phillips 2001
-LambdaM = 1145; % double check this... this is from memory for testing
+
 
 % This section is for expanding the sample domain and to add buffers around
 % the sample location to allow for rays (high energy neutron) to be
@@ -59,21 +63,24 @@ zPreset = [zBuf zBuf dT2 dT2];
 % This is the closed rectangular cross section of each sample. A y component
 % is not needed in this model as the y component does not vary and is set
 % to 0.
-rSx = [xSamp(:,1) xSamp(:,2) xSamp(:,2) xSamp(:,1) xSamp(:,1)];
-rSz = [zSamp(:,2) zSamp(:,2) zSamp(:,1) zSamp(:,1) zSamp(:,2)];
+% rSx = [xSamp(:,1) xSamp(:,2) xSamp(:,2) xSamp(:,1) xSamp(:,1)];
+% rSz = [zSamp(:,2) zSamp(:,2) zSamp(:,1) zSamp(:,1) zSamp(:,2)];
 
 % This creates a random distribution of sample points to calculate the
 % concentration, This makes a pseudo integration (MC) of the volume of
 % rock sample collected.
-nP = 1; % number of points to generate inside each sample volume
-if nP>1
-    rSxPoints = min(rSx')+(max(rSx')-min(rSx')).*rand(nP,1);
-    rSzPoints = min(rSz')+(max(rSz')-min(rSz')).*rand(nP,1);
-else    % This finds the centroid of the sample
-    rSxPoints = (max(rSx')+min(rSx'))/2;
-    rSzPoints = (max(rSz')+min(rSz'))/2;
-end
-numSamples = length(rSzPoints);
+% nP = 1; % number of points to generate inside each sample volume
+% if nP>1
+%     XSampLim = min(rSx')+(max(rSx')-min(rSx')).*rand(nP,1);
+%     ZSampLim = min(rSz')+(max(rSz')-min(rSz')).*rand(nP,1);
+% else    % This finds the centroid of the sample
+%     XSampLim = (max(rSx')+min(rSx'))/2;
+%     ZSampLim = (max(rSz')+min(rSz'))/2;
+% end
+XSamp = [min(xSamp,[],2) max(xSamp,[],2)];
+ZSamp = [min(zSamp,[],2) max(zSamp,[],2)];
+
+% numSamples = length(rSzPoints);
 
 
 %% Solve for S parameter of measurements
@@ -83,7 +90,7 @@ abradedDepthSolved = log(SpMeasured)*-160/rho;
 %% Init abrasion depth guess and figure 5
 abrasionDepth = 2.75;  % depth of abrasion in cm
 
-makeFigures = true;
+
 %% Build the surface model
 % x1 = [-1 0 481 821 1126 1127]; y1 = [-301 -300 300 301];
 % z1 = [100 100 220 220];
@@ -91,7 +98,7 @@ makeFigures = true;
 % [a,b] = size(X1);
 % Z1 = zeros(size(X1));
 % Z1(2:a-1,2:b-1) = [z1+1.5;z1+1.5];
-xL = 25; zL = 5;
+xL = 5; zL = 5;
 rLmean = zeros(xL*zL,numSamples);
 for jj = 1:xL*zL
     %% Call the surface model
@@ -113,8 +120,8 @@ if makeFigures == true
     hold off
 end
 %%
-numRays = 1000;
-numRays = numRays * nP;
+numRays = 500;
+% numRays = numRays * nP;
 %% Compute the intersection of the points to the surfaces
 % Make the triangles for the vertices to be 'draped' over the x,y
 % coordinates.
@@ -138,48 +145,56 @@ for ii = 1:numSamples
     else
         [theta,phi] = cosmoDistribution(numRays);
     end
+    rL = zeros(numRays,1);
     rad = 1.2e3;    % the radius or ray distance
-    if nP == 1
-        Q1 = [rSxPoints(ii) 0 rSzPoints(ii)]; 
-        Q3 = [rad.*sin(theta).*cos(phi)+Q1(1),...
-            rad.*sin(theta).*sin(phi)+Q1(2) rad.*cos(theta)+Q1(3)];
-    elseif nP > 1
-        error('n>1, This functionality of multiple points per sample not ready yet. Read comment in code')
-%         Q1 = [rSxPoints(:,ii) zeros(size(rSzPoints(:,ii))) rSzPoints(:,ii)]; 
+    Q1 = [XSamp(ii,1)+(XSamp(ii,2)-XSamp(ii,1)).*rand(numRays,1),...
+        rL,...
+        ZSamp(ii,1)+(ZSamp(ii,2)-ZSamp(ii,1)).*rand(numRays,1)];
+    Q2 = [rad.*sin(theta).*cos(phi)+Q1(:,1),...
+            rad.*sin(theta).*sin(phi)+Q1(:,2),...
+            rad.*cos(theta)+Q1(:,3)];
+%     if nP == 1
+%         Q1 = [XSampLim(ii) 0 ZSampLim(ii)]; 
 %         Q3 = [rad.*sin(theta).*cos(phi)+Q1(1),...
 %             rad.*sin(theta).*sin(phi)+Q1(2) rad.*cos(theta)+Q1(3)];
-%         Q3 = permute(Q3,[numel(Q3),1]);
-% To get the ability of multiple points per sample location running, I need
-% to abstract the ray trace for loop into a function, then be able to loop
-% through the different Q1 points for each ray randomly-evenly distributed.
-    end
+%     elseif nP > 1
+%         error('n>1, This functionality of multiple points per sample not ready yet. Read comment in code')
+% %         Q1 = [rSxPoints(:,ii) zeros(size(rSzPoints(:,ii))) rSzPoints(:,ii)]; 
+% %         Q3 = [rad.*sin(theta).*cos(phi)+Q1(1),...
+% %             rad.*sin(theta).*sin(phi)+Q1(2) rad.*cos(theta)+Q1(3)];
+% %         Q3 = permute(Q3,[numel(Q3),1]);
+% % To get the ability of multiple points per sample location running, I need
+% % to abstract the ray trace for loop into a function, then be able to loop
+% % through the different Q1 points for each ray randomly-evenly distributed.
+%     end
     
-    rL = zeros(numRays,1);
+%     rL = zeros(numRays,1);
     for k = 1:numRays
-        Q2 = Q3(k,:);
+        Q4 = Q2(k,:);
+        Q3 = Q1(k,:);
         X = zeros(numT,1); Y = zeros(numT,1); Z = zeros(numT,1); 
         rays = zeros(numT,1);
         n=0;
-        temp = 0;
+%         temp = 0;
         surfaceSample = false;
         for j = 1:numT
             P1=[X1(tri(j,1)) Y1(tri(j,1)) Z1(tri(j,1))];
             P2=[X1(tri(j,2)) Y1(tri(j,2)) Z1(tri(j,2))];
             P3=[X1(tri(j,3)) Y1(tri(j,3)) Z1(tri(j,3))];
             N = cross(P2-P1,P3-P1); % Normal to the plane of the triangle
-            P0 = Q1 + dot(P1-Q1,N)/dot(Q2-Q1,N)*(Q2-Q1); % The point of intersection
+            P0 = Q3 + dot(P1-Q3,N)/dot(Q4-Q3,N)*(Q4-Q3); % The point of intersection
             if dot(cross(P2-P1,P0-P1),N)>=0 && ...  % Is P0 inside triangle?
                dot(cross(P3-P2,P0-P2),N)>=0 && ...
                dot(cross(P1-P3,P0-P3),N)>=0 && ...
-               P0(3)-Q1(3)>=-0.0001    % Does the ray project below the sample?
+               P0(3)-Q3(3)>=-0.0001    % Does the ray project below the sample?
                 n = n + 1;
                 X(n) = P0(1); Y(n) = P0(2); Z(n) = P0(3); % If so, store P0
-                temp = P0-Q1;
+                temp = P0-Q3;
                 temp = sqrt(temp*temp');
         %         disp(temp)
                 rays(n) = temp;
             end
-            if P0(3)-Q1(3) == 0
+            if P0(3)-Q3(3) == 0
                 surfaceSample = true;
             end
         end
@@ -199,10 +214,11 @@ for ii = 1:numSamples
             end
         end
         
+%         figure(13)
 %         trisurf(tri,X1,Y1,Z1)
 %         hold on
 %         if rem(k,10)==0
-%             plot3([Q1(1);X;Q2(1)],[Q1(2);Y;Q2(2)],[Q1(3);Z;Q2(3)],'r-*')
+%             plot3([Q3(1);X;Q4(1)],[Q3(2);Y;Q4(2)],[Q3(3);Z;Q4(3)],'r-*')
 %         end
 
         rL(k) = rayLength;
@@ -213,14 +229,24 @@ end
 % disp(rLmean)
 end
 
+%% This plots the incoming rays
+% Xray = [Q1(:,1)'; Q2(:,1)'];
+% Yray = [Q1(:,2)'; Q2(:,2)'];
+% Zray = [Q1(:,3)'; Q2(:,3)'];
+% figure(13)
+% trisurf(tri,X1,Y1,Z1)
+% hold on
+% plot3(Xray,Yray,Zray,'r')
+% hold off
+
 %% Calculate the shielding factor, concentration, chi^2 reduction
-Pmuon = 0;
+% Pmuon = 0;
 S = exp(-rLmean*rho/LambdaP);
 concSolve = Pspal*S/lambda*(1-exp(-lambda*tExpose))...
     + Pmuon/lambda*(1-exp(-lambda*tExpose));
 M = sum(((conc-concSolve')./sigma).^2);
 
-plotResults = true;
+
 if plotResults == true
     [~,b] = mink(M,10);
     figure11 = figure(12);
@@ -239,7 +265,7 @@ if plotResults == true
 %         'Location','north')
 end
 %%
-toc
+% toc
 %% 
 % figure(4)
 % subplot(1,2,1)
@@ -249,49 +275,49 @@ toc
 % title('Phi')
 % histogram(phi*360/(2*pi))
 
-
-function [theta,phi] = cosmoDistribution(num)
-%% determine a random distribution of cosmic radiation products
-% alpha is from 0 to pi, where zero is horizontal and pi/2 is 90 degrees or
-% vertical
-rng('shuffle')
-phi = rand(num,1)*2*pi;
-
-% This section takes twice as long computationally compared to below
-if num<100
-    theta = zeros(num,1);
-    n = 0;
-    while n<num
-        temp = pi/2*rand; y = rand;
-        Power = 2.3;  % 2.3
-        if cos(temp)^Power>=y
-            n = n +1;
-            theta(n) = temp;
-        end
-    end
-else
-    N = 4*num;
-    theta = pi/2*rand(N,1);
-    y = rand(N,1);
-
-    i = cos(theta).^2.3>=y;
-    theta = theta(i);
-
-    % This is a check to make sure there are enought points, 
-    % but is usually not needed for less than 1000
-    if length(theta)>num
-        theta = theta(1:num);
-    else
-        disp('Alert!')
-        N = 10*num;
-        theta = pi*rand(N,1);
-        y = rand(N,1);
-
-        i = sin(theta).^2.3>=y;
-        theta = theta(i);
-        if length(theta)<num
-            error('x is too short')
-        end
-    end
-end
-end
+% 
+% function [theta,phi] = cosmoDistribution(num)
+% %% determine a random distribution of cosmic radiation products
+% % alpha is from 0 to pi, where zero is horizontal and pi/2 is 90 degrees or
+% % vertical
+% rng('shuffle')
+% phi = rand(num,1)*2*pi;
+% 
+% % This section takes twice as long computationally compared to below
+% if num<100
+%     theta = zeros(num,1);
+%     n = 0;
+%     while n<num
+%         temp = pi/2*rand; y = rand;
+%         Power = 2.3;  % 2.3
+%         if cos(temp)^Power>=y
+%             n = n +1;
+%             theta(n) = temp;
+%         end
+%     end
+% else
+%     N = 4*num;
+%     theta = pi/2*rand(N,1);
+%     y = rand(N,1);
+% 
+%     i = cos(theta).^2.3>=y;
+%     theta = theta(i);
+% 
+%     % This is a check to make sure there are enought points, 
+%     % but is usually not needed for less than 1000
+%     if length(theta)>num
+%         theta = theta(1:num);
+%     else
+%         disp('Alert!')
+%         N = 10*num;
+%         theta = pi*rand(N,1);
+%         y = rand(N,1);
+% 
+%         i = sin(theta).^2.3>=y;
+%         theta = theta(i);
+%         if length(theta)<num
+%             error('x is too short')
+%         end
+%     end
+% end
+% end
