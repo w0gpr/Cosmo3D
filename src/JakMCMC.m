@@ -1,5 +1,11 @@
-function [out] = JakMCMC(params,data)
+function [out] = JakMCMC(params,dataIn)
 %% This is a function to run simulations through different inputs
+
+
+xP = params(1);
+zP = params(2);
+LambdaP = params(3);
+abrasionDepth = params(4);
 % disp('xP')
 % disp(xP)
 % disp('zP')
@@ -7,19 +13,15 @@ function [out] = JakMCMC(params,data)
 % disp('LambdaP')
 % disp(LambdaP)
 % disp(abrasionDepth)
-
-xP = params(1);
-zP = params(2);
-LambdaP = params(3);
-abrasionDepth = params(4);
-
-dummyVar = data;
+disp(params)
+disp(dataIn)
+% dummyVar = data;
 % xP = data.xP
 % tic
 rng('shuffle')
 
 % Set the constants
-numRays = 1000;
+numRays = 100;
 lambda = 4.99e-7; % Be-10 decay rate
 tExpose = 7200; % duration of exposure - years, 
 % tBurial = 200; % years
@@ -33,7 +35,7 @@ rho = 2.65;      % sample density
 % increased or decreased
 data = readtable('Camp3Samples.csv');
 numSamples = 8;
-D = data{1:8,2:end};
+D = data{1:numSamples,2:end};
 abradePluckContact = 340;   % cm from base
 wallHeight = 120;           % cm
 
@@ -44,8 +46,8 @@ D(:,7:8) = D(:,7:8)-wallHeight;
 D(:,5:8) = D(:,5:8)*-1;
 
 % This section breaks the data into more recognizable variable names
-conc = D(:,1);
-sigma = D(:,2);
+conc = dataIn(:,1);
+sigma = dataIn(:,2);
 Pspal = D(1,3);
 Pmuon = D(1,4);
 xSamp = D(:,5:6);
@@ -155,7 +157,9 @@ M = sum(((conc-concSolve')./sigma).^2);
 % out.concSolve = concSolve;
 % out.M = M;
 
-out = [M concSolve];
+% out = [M concSolve];
+% out = concSolve';
+out = M;
 
 % toc
 end
