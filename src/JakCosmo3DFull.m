@@ -134,11 +134,13 @@ concSolve = Pspal*S/lambda*(1-exp(-lambda*tExpose))...
 M = sum(((conc-concSolve')./sigma).^2);
 
 %% Generate outputs
-out.X1 = X1;
-out.Y1 = Y1;
-out.Z1 = Z1;
-out.concSolve = concSolve;
-out.M = M;
+% out.X1 = X1;
+% out.Y1 = Y1;
+% out.Z1 = Z1;
+% out.concSolve = concSolve;
+% out.M = M;
+
+out = M;
 
 toc
 end
