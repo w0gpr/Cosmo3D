@@ -25,7 +25,7 @@ else
     i = cos(theta).^2.3>=y;
     theta = theta(i);
 
-    % This is a check to make sure there are enought points, 
+    % This is a check to make sure there are enough points, 
     % but is usually not needed for less than 1000
     if length(theta)>num
         theta = theta(1:num);

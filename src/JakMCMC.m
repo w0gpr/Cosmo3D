@@ -13,15 +13,15 @@ abrasionDepth = params(4);
 % disp('LambdaP')
 % disp(LambdaP)
 % disp(abrasionDepth)
-disp(params)
-disp(dataIn)
-% dummyVar = data;
+% disp(params)
+% disp(dataIn)
+dummyVar = dataIn;
 % xP = data.xP
 % tic
 rng('shuffle')
 
 % Set the constants
-numRays = 100;
+numRays = 1000;
 lambda = 4.99e-7; % Be-10 decay rate
 tExpose = 7200; % duration of exposure - years, 
 % tBurial = 200; % years
@@ -46,8 +46,8 @@ D(:,7:8) = D(:,7:8)-wallHeight;
 D(:,5:8) = D(:,5:8)*-1;
 
 % This section breaks the data into more recognizable variable names
-conc = dataIn(:,1);
-sigma = dataIn(:,2);
+conc = D(:,1);      % dataIn.conc; 
+sigma = D(:,2);     % dataIn.sigma;
 Pspal = D(1,3);
 Pmuon = D(1,4);
 xSamp = D(:,5:6);
@@ -160,6 +160,7 @@ M = sum(((conc-concSolve')./sigma).^2);
 % out = [M concSolve];
 % out = concSolve';
 out = M;
+
 
 % toc
 end

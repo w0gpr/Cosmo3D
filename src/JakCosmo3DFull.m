@@ -1,10 +1,10 @@
-function [out] = JakCosmo3DFull(xP,zP,LambdaP,abrasionDepth)
+function [out] = JakCosmo3DFull(data,xP,zP,LambdaP,abrasionDepth,numRays)
 %% This is a function to run simulations through different inputs
-tic
+% tic
 rng('shuffle')
 
 % Set the constants
-numRays = 1000;
+% numRays = 1000;
 lambda = 4.99e-7; % Be-10 decay rate
 tExpose = 7200; % duration of exposure - years, 
 % tBurial = 200; % years
@@ -16,7 +16,7 @@ rho = 2.65;      % sample density
 % This section reads in the data from the .csv and then rotates the datum.
 % It is done in a way that is dynamic and allows for buffers to be
 % increased or decreased
-data = readtable('Camp3Samples.csv');
+% data = readtable('Camp3Samples.csv');
 numSamples = 8;
 D = data{1:8,2:end};
 abradePluckContact = 340;   % cm from base
@@ -137,10 +137,13 @@ M = sum(((conc-concSolve')./sigma).^2);
 % out.X1 = X1;
 % out.Y1 = Y1;
 % out.Z1 = Z1;
+% out.tri = tri;
 % out.concSolve = concSolve;
 % out.M = M;
 
-out = M;
+out = {M, concSolve, X1, Y1, Z1, tri};
 
-toc
+% out = M;
+
+% toc
 end
