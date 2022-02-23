@@ -12,7 +12,7 @@
 % MIT License
 % 20210930
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-close all
+% close all
 
 %% Initialize parallel pool
 % pool = 1;
@@ -21,45 +21,73 @@ close all
 % end
 
 %% Initialize Data and setup
-tic
-info = JakReadData;
-numIter = 500;
-numRays = 1000;
-load '/home/brandon/Matlab/Cosmo3D/data/Output/JakMCMCData.mat';
-aC = sortrows([sschain chain]);   % allChain
-concSolve = zeros(numIter,info.numSamples);
+% tic
+% info = JakReadData;
+% numIter = 500;
+% numRays = 1000;
+% load '/home/brandon/Matlab/Cosmo3D/data/Output/JakMCMCData.mat';
+% aC = sortrows([sschain chain]);   % allChain
+% concSolve = zeros(numIter,info.numSamples);
+% 
+% 
+% %% Run the parfor loop
+% toc
+% parfor ii = 1:numIter
+%     out{ii} = JakCosmo3DFull(dataTable, aC(ii,2), aC(ii,3), aC(ii,4), aC(ii,5), numRays);
+% end
+% toc
+% %% break apart the data
+% X1 = out{1,1}{1,3};
+% Y1 = out{1,1}{1,4};
+% Z1 = out{1,1}{1,5};
+% tri = out{1,1}{1,6};
 
-
-%% Run the parfor loop
-toc
-parfor ii = 1:numIter
-    out{ii} = JakCosmo3DFull(dataTable, aC(ii,2), aC(ii,3), aC(ii,4), aC(ii,5), numRays);
+loadData = false;
+if loadData
+%     load /home/brandon/Matlab/Cosmo3D/data/Output/JakMCMCPlotData.mat;
 end
-toc
-%% break apart the data
-X1 = out{1,1}{1,3};
-Y1 = out{1,1}{1,4};
-Z1 = out{1,1}{1,5};
-tri = out{1,1}{1,6};
+% 
+% eM = [0 1 208 0.1    % end Members
+%     0 1 182 0.1
+%     0 1 208 4.1
+%     0 1 182 4.1
+%     1 0 208 0.1
+%     1 0 182 0.1
+%     1 0 208 4.1
+%     1 0 182 4.1];
 
-figure(1)
-trisurf(tri,X1,Y1,Z1)
-chi2 = zeros(numIter,1);
-Z2 = zeros(numIter,29);
-for ii = 1:numIter
-    concSolve(ii,:) = out{1,ii}{1,2}(:)';
-    chi2(ii) = out{1,ii}{1,1};
-    Z2(ii,:) = out{1,ii}{1,5}(2,2:end-1);
+% for ii = 8:-1:1
+%     out2{ii} = JakCosmo3DFull(dataTable, eM(ii,1), eM(ii,2), eM(ii,3), eM(ii,4), numRays);
+% end
+
+out2 = GrahamModel3DBuilderRayTrace();
+X3 = out2{1,3}(2,2:end-1);
+% Y1 = out{1,1}{1,4};
+Z3 = zeros(4,length(X3));
+for jj = 1:4
+Z3(jj,:) = out2{1,5}{1,jj}(2,2:end-1);
 end
-X2 = out{1,1}{1,3}(2,2:end-1);
+    
+% figure(1)
+% trisurf(tri,X1,Y1,Z1)
+% chi2 = zeros(numIter,1);
+% Z2 = zeros(numIter,29);
+% for ii = 1:numIter
+%     concSolve(ii,:) = out{1,ii}{1,2}(:)';
+%     chi2(ii) = out{1,ii}{1,1};
+%     Z2(ii,:) = out{1,ii}{1,5}(2,2:end-1);
+% end
+% X2 = out{1,1}{1,3}(2,2:end-1);
 %% Plotting the data
 figure(2); clf
-plot(X2(1,:),Z2,'Color',[0.8 0.8 0.8],'LineWidth',0.5)
+plot(X2(1,:),Z2,'Color',[0.8 0.8 0.8 0.01],'LineWidth',1)
 hold on
+plot(X3,Z3,'LineWidth',3)
 for i=1:info.numSamples
-    plot(info.rSx(i,:),info.rSz(i,:),'k-','LineWidth',1.5)
+    plot(info.rSx(i,:),info.rSz(i,:),'k-','LineWidth',3)
 end
-plot(info.xPresent,info.zPresent,'k','LineWidth',1.5)
+plot(info.xPresent,info.zPresent,'k','LineWidth',3)
+set(gcf, 'Position', [39 371 2316 323]);
 
 
 figure11 = figure(3);
@@ -68,13 +96,15 @@ axes1 = axes('Parent',figure11,'XTickLabel',info.sampleID,'XDir','reverse');
 box(axes1,'on');
 hold(axes1,'all');
 % Create plot
-plot(concSolve','Color',[0.8 0.8 0.8],'LineWidth',0.15);
+plot(concSolve','Color',[0.8 0.8 0.8, 0.05],'LineWidth',1);
 hold on
-plot(data.conc,'k','LineWidth',1.5)
-errorbar(data.conc,data.sigma,'ko','LineWidth',1.5)
+plot(out2{1,2}','LineWidth',3)
+plot(data.conc,'k','LineWidth',3)
+errorbar(data.conc,data.sigma,'ko','LineWidth',3)
+% errorbar(data.conc,data.sigma*2,'ko','LineWidth',1)
 xlabel('Sample name')
 ylabel('Concentration (Atoms/gram Qtz)')
+set(gcf, 'Position', [1 1 1920 961]);
     
     
-    
-save /home/brandon/Matlab/Cosmo3D/data/Output/JakMCMCPlotData.mat    
+% save /home/brandon/Matlab/Cosmo3D/data/Output/JakMCMCPlotData.mat    

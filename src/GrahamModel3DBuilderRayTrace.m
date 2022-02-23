@@ -1,4 +1,6 @@
-clear
+function out = GrahamModel3DBuilderRayTrace()
+
+% clear
  
 rng('shuffle')
 % rng(4096)
@@ -7,13 +9,13 @@ lambda = 4.99e-7; % decay rate
 tExpose = 7200; % duration of exposure - years, 
 % tBurial = 500; % years
 rho = 2.65;      % sample density
-LambdaP = 208;  % g/cm^2 from Gosse and Phillips 2001
+LambdaP = 180;  % g/cm^2 from Gosse and Phillips 2001
 LambdaM = 1145; % double check this... this is from memory for testing
 
 % tic
 % sm = 1;
-makeFigures = true; % Make the 3D and 2D models
-plotResults = true; % Show the chi^2 results
+makeFigures = false; % Make the 3D and 2D models
+plotResults = false; % Show the chi^2 results
 %% Read in sample data
 % This section reads in the data from the .csv and then rotates the datum.
 % It is done in a way that is dynamic and allows for buffers to be
@@ -85,7 +87,7 @@ ZSamp = [min(zSamp,[],2) max(zSamp,[],2)];
 
 %% Solve for S parameter of measurements
 SpMeasured = (conc*lambda)/(Pspal*(1-exp(-lambda*tExpose)))-(Pmuon/Pspal);
-abradedDepthSolved = log(SpMeasured)*-160/rho;
+abradedDepthSolved = log(SpMeasured)*-132/rho;
 
 %% Init abrasion depth guess and figure 5
 abrasionDepth = 2.75;  % depth of abrasion in cm
@@ -98,14 +100,15 @@ abrasionDepth = 2.75;  % depth of abrasion in cm
 % [a,b] = size(X1);
 % Z1 = zeros(size(X1));
 % Z1(2:a-1,2:b-1) = [z1+1.5;z1+1.5];
-xL = 5; zL = 5;
+xL = 2; zL = 2;
 rLmean = zeros(xL*zL,numSamples);
+Z2 = {};
 for jj = 1:xL*zL
     %% Call the surface model
 [X1,Y1,Z1] = surfaceModel(jj,abrasionDepth,xL,zL,xPreset,zPreset);
 tri = delaunay(X1,Y1);
 [numT,~] = size(tri);
-
+Z2{jj} = Z1;
 if makeFigures == true
     figure(1)
     subplot(xL,zL,jj)
@@ -120,7 +123,7 @@ if makeFigures == true
     hold off
 end
 %%
-numRays = 500;
+numRays = 1;
 % numRays = numRays * nP;
 %% Compute the intersection of the points to the surfaces
 % Make the triangles for the vertices to be 'draped' over the x,y
@@ -246,6 +249,7 @@ concSolve = Pspal*S/lambda*(1-exp(-lambda*tExpose))...
     + Pmuon/lambda*(1-exp(-lambda*tExpose));
 M = sum(((conc-concSolve')./sigma).^2);
 
+out = {M, concSolve, X1, Y1, Z2, tri};
 
 if plotResults == true
     [~,b] = mink(M,10);
