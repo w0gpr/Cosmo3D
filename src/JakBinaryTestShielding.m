@@ -1,6 +1,4 @@
-%% JakMCMCCall.m
-% This code calls the JakMCMC.m code to run through the MCMCStat model. The
-% code is maintained at: https://mjlaine.github.io/mcmcstat/
+
 clear
 dataTable = readtable('Camp3Samples.csv');
 numSamples = 2;
@@ -30,11 +28,11 @@ SFER2B = skyline(ER2B(:,1),ER2B(:,2));
 
 Lambda = 160;
 lambda = 4.99e-7; % Be-10 decay rate
-tExpose = 7200; % duration of exposure - years, 
-tBurial = 200; % years
+tExpose = 7400; % duration of exposure - years, 
+tBurial = 220; % years
 rho = 2.65;      % sample density
 
-SF = (data.conc*lambda)/(data.P*(1-exp(-lambda*(tExpose-tBurial))));
+SF = (data.conc*lambda)/(data.P*(1-exp(-lambda*(tExpose-tBurial))))
 SFall = (conc*lambda)/(data.P*(1-exp(-lambda*(tExpose-tBurial))));
   
-depthER2A = -log(SFall(1,:))*Lambda/rho
+depthER2A = -log(SFall(1,:))*Lambda/rho;
