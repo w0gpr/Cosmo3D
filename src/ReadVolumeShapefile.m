@@ -10,7 +10,7 @@ filename = 'file:///home/brandon/GIS/Greenland/JakCosmo/data/vector/BlockVolume3
 data = shaperead(filename);
 [numID, ~] = size(data);
 
-percentError = 0.5;
+percentError = 0.3;
 
 %% Convert data to matrix
 polygons = zeros(numID,4);
@@ -72,26 +72,52 @@ quarryVolumeSum_buf = sum(quarryVolume_buf);
 
 %% Full Range of volumes
 
-% volRange = [floor(polygons(:,3)) ceil(polygons_buf(:,3))] * 1000;
-% volRange = sort(volRange')';
-% 
-% for i = 1:n
-%     volRand
-% end
-% quarryVolume_all = randi([volRange(:,1),volRange(:,1)],n,1)./1000 ...
-%     .* polygons_buf(:,5) + polygons_buf(:,3) .* percentError .* polygons_buf(:,5) .* randn(numID,n);
-% quarryVolumeSum_buf = sum(quarryVolume_buf);
+n=5e5;
 
+volRange = [floor(polygons(:,3)) ceil(polygons_buf(:,3))] * 1000;
+volRange = volRange + 1;
+volRange = sort(volRange')';
+volRand = zeros(numID,n);
+for i = 1:numID
+    volRand(i,:) = randi([volRange(i,1),volRange(i,2)],1,n)./1000;
+end
+quarryVolume_all = volRand .* polygons_buf(:,5) + volRand .* percentError .* polygons_buf(:,5) .* randn(numID,n);
+quarryVolumeSum_all = sum(quarryVolume_all);
+
+%% 
+mean(sum(volRand))
+std(sum(volRand))
+mean(quarryVolumeSum_all)
+std(quarryVolumeSum_all)
+
+
+
+figure(2)
+clf
+h1 = histogram(sum(volRand));
+h1.BinWidth = 10;
+hold on
+h2 = histogram(quarryVolumeSum_all);
+h2.BinWidth = 10;
+
+
+
+
+%% 
 figure(1)
 clf
 h1 = histogram(quarryVolumeSum);
-h1.BinWidth = 25;
+h1.BinWidth = 10;
 hold on
 h2 = histogram(quarryVolumeSum_buf);
-h2.BinWidth = 25;
+h2.BinWidth = 10;
+h3 = histogram(quarryVolumeSum_all);
+h3.BinWidth = 10;
 
-mean(quarryVolumeSum)
-mean(quarryVolumeSum_buf)
+mean(quarryVolumeSum);
+mean(quarryVolumeSum_buf);
+mean(quarryVolumeSum_all)
+std(quarryVolumeSum_all)
 
 % 
 % %% Read in area shapefile
