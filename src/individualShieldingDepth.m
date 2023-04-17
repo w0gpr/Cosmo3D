@@ -1,3 +1,6 @@
+%% individualShieldingDepth
+% This is a utility to calculate the estimated shielding factor versus the measured skyline shielding factor for a sample, based on the in field measurement of shielding via azimuth/elevation and the measured concentration based on a known expsoure history. This can be used to directly estimate the depth of erosion for a sample.
+
 
 clear
 dataTable = readtable('Camp3Samples.csv');
@@ -14,7 +17,7 @@ tBurial = 220; % years
 rho = 2.65;      % sample density
 
 % SF = (data.conc*lambda)/(data.P*(1-exp(-lambda*(tExpose-tBurial))));
-SFall = (conc*lambda)/(data.P*(1-exp(-lambda*(tExpose-tBurial))));
+SFall = (conc*lambda)/(data.P*(1-exp(-lambda*(tExpose-tBurial)))); % The calculated shielding factor based on the measured concentration.
   
 temp = -log(SFall)*Lambda/rho;
 

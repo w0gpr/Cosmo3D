@@ -5,7 +5,7 @@
 % chi^2 reduction of the parameters xP, zP, LambdaP, erosionDepth, then
 % feeds back into the JakMCMC.m function to create the outputs for plotting
 % the data. A better approach would have been to do this during the MCMC
-% call, but I could not figure out how to do this easily using the
+% call, but I could not determine how to do this easily using the
 % MCMCStats toolbox. It probably could be done, but this should turn out
 % easier. It also allows me to parallize it, which is always the dream :)
 % Brandon Graham, University at Buffalo, Geology Department
@@ -42,7 +42,7 @@
 % Z1 = out{1,1}{1,5};
 % tri = out{1,1}{1,6};
 
-loadData = false;
+loadData = false; % This is to load the data from the full MCMC
 if loadData
 %     load /home/brandon/Matlab/Cosmo3D/data/Output/JakMCMCPlotData.mat;
 end
@@ -60,7 +60,7 @@ end
 %     out2{ii} = JakCosmo3DFull(dataTable, eM(ii,1), eM(ii,2), eM(ii,3), eM(ii,4), numRays);
 % end
 
-out2 = GrahamModel3DBuilderRayTrace();
+out2 = GrahamModel3DBuilderRayTrace(); % Load specific end members scenarios 
 X3 = out2{1,3}(2,2:end-1);
 % Y1 = out{1,1}{1,4};
 Z3 = zeros(4,length(X3));

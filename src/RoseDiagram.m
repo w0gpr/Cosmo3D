@@ -1,7 +1,7 @@
 %% Rose Diagram program
 % This program is written to visualize geologic data as a rose diagram or
 % polar coordinate histogram.  The specific application for originally
-% writting this script was to plot data from an outcropping surface
+% writing this script was to plot data from an outcropping surface
 % recently exposed in Greenland of glacial flow indicators such as
 % striations, single chatter marks, chatter mark trains, and varying levels
 % of "freshness" of mark, assumed created during the Little Ice Age
@@ -15,15 +15,16 @@ rad2 = 15;
 % test = data;
 edges = deg2rad(0:360/bins:360);
 bins = edges;
-data(data(:,1)>270,1) = data(data(:,1)>270,1) - 180;
+data(data(:,1)>270,1) = data(data(:,1)>270,1) - 180; % This transforms data to be in southern orientation.
 
-
+%% This sorts the data to the various ages determined by field "freshness" or certainty
 age = sortrows(data,2);
 age1 = age(age(:,2)==1,1);
 age2 = age(age(:,2)==2,1);
 age3 = age(age(:,2)==3,1);
 age4 = age(age(:,2)==4,1);
 
+%% This sorts the data by the type of mark
 mark = sortrows(data,3);
 Chat = mark(mark(:,3)==1,1);
 ChatTrain = mark(mark(:,3)==2,1);
@@ -35,31 +36,13 @@ Joint = mark(mark(:,3)==6,1);
 Data = data;
 data = data(data(:,3)~=6,1);
 
-%% Part 1
+%% Figures
 figure (1)
 clf
 % baseline(Data(:,1),bins,0)
 PHist(Data(:,1),bins,0)
 % title 'All Data'
 
-% figure (2)
-% subplot(1,3,1)
-% baseline(data(:,1),bins,rad1)
-% PHist(age1,bins,rad1)
-% hold off
-% title 'Type 1 marks'
-% 
-% subplot (1,3,2)
-% baseline(data(:,1),bins,rad1)
-% PHist(age2,bins,rad1)
-% hold off
-% title 'Type 2 marks'
-% 
-% subplot(1,3,3)
-% baseline(data(:,1),bins,rad1)
-% PHist(age3,bins,rad1)
-% hold off
-% title 'Type 3 marks'
 
 
 %% Part 2
@@ -70,36 +53,26 @@ subplot(2,2,1)
 baseline(data(:,1),bins,rad2)
 PHist(Striae,bins,rad2)
 hold off
-title 'A. Striations'
+% title 'A. Striations'
 
 subplot(2,2,2)
 baseline(data(:,1),bins,rad2)
 PHist([Chat;ChatTrain],bins,rad2)
 hold off
-title 'B. Chatter Marks'
-
-% subplot (2,2,2)
-% baseline(data(:,1),bins,rad2)
-% PHist(ChatTrain,bins,rad2)
-% hold off
-% title 'Chatter Trains'
+% title 'B. Chatter Marks'
 
 subplot(2,2,3)
 baseline(data(:,1),bins,rad2)
 PHist(Gouge,bins,rad2)
 hold off
-title 'C. Gouges'
+% title 'C. Gouges'
 
 subplot (2,2,4)
 baseline(data(:,1),bins,rad2)
 PHist(Pluck,bins,rad2)
 hold off
-title 'D. Quarried Cliffs'
-% 
-% subplot(2,3,6)
-% baseline(data(:,1),bins,rad2)
-% PHist(Questionable,bins,rad2)
-% title 'Questionable Striations'
+% title 'D. Quarried Cliffs'
+
 
 hold off
 

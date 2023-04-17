@@ -2,7 +2,9 @@ function out = JakReadData()
 %% Read in sample data
 % This section reads in the data from the .csv and then rotates the datum.
 % It is done in a way that is dynamic and allows for buffers to be
-% increased or decreased
+% increased or decreased. 
+
+% This was an attempt to break the "ReadData" into a separate function, but was later abandoned to minimize complexity.
 data = readtable('Camp3Samples.csv');
 out.numSamples = 8;
 out.sampleID = data{1:out.numSamples,1};

@@ -2,9 +2,7 @@ function [X1,Y1,Z1] = surfaceModelSingle(abrasionDepth,xP,zP,xPreset,zPreset)
 
 %% Surface model builder
 % This script builds the surface models that are then output to the main
-% program to be read into the ray trace model. There are three initial end
-% members, and then eventually intermediate scenarios to solve for the
-% minimized chi^2 reduction. 
+% program to be read into the ray trace model. 
 
 buf = 300;  % This is 3 meters of buffer on either side of the sample.
 y1 = [-buf-1 -buf buf buf+1];

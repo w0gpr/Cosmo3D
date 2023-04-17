@@ -1,5 +1,7 @@
 function out = GrahamModel3DBuilderRayTrace()
 
+% This was an early development to make a stand alone simulator and to test different types of code.
+
 % clear
  
 rng('shuffle')
@@ -10,7 +12,7 @@ tExpose = 7200; % duration of exposure - years,
 % tBurial = 500; % years
 rho = 2.65;      % sample density
 LambdaP = 180;  % g/cm^2 from Gosse and Phillips 2001
-LambdaM = 1145; % double check this... this is from memory for testing
+LambdaM = 1145; % 
 
 % tic
 % sm = 1;

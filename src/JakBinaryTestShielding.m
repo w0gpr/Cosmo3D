@@ -1,3 +1,6 @@
+%% JakBinaryTestShielding
+% This is a utility to test the binary nature of the fresh vs abraded quarried zones. 
+
 
 clear
 dataTable = readtable('Camp3Samples.csv');

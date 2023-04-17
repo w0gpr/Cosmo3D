@@ -1,5 +1,6 @@
 function [out] = JakCosmo3DFull(data,xP,zP,LambdaP,abrasionDepth,numRays)
-%% This is a function to run simulations through different inputs
+%% This is a function to run simulations through different inputs.
+% This is designed to test scenarios.
 % tic
 rng('shuffle')
 
@@ -9,8 +10,7 @@ lambda = 4.99e-7; % Be-10 decay rate
 tExpose = 7200; % duration of exposure - years, 
 % tBurial = 200; % years
 rho = 2.65;      % sample density
-% LambdaP = 208;  % g/cm^2 from Gosse and Phillips 2001
-% LambdaM = 1145; % double check this... this is from memory for testing
+
 
 %% Read in sample data
 % This section reads in the data from the .csv and then rotates the datum.

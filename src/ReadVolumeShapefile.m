@@ -3,9 +3,7 @@
 % clear
 
 %% Read in the data and organize
-% filename = 'file:///home/brandon/GIS/Greenland/JakCosmo/data/vector/BlockVolume3-05-dis.shp';
-% filename = 'file:///home/brandon/GIS/Greenland/JakCosmo/data/vector/BlockVolume-BufDis-05.shp';
-filename = 'file:///home/brandon/GIS/Greenland/JakCosmo/data/vector/BlockVolume3.shp';
+filename = '~/data/vector/BlockVolume3.shp';
 
 data = shaperead(filename);
 [numID, ~] = size(data);
@@ -40,7 +38,7 @@ quarryVolumeSum = sum(quarryVolume);
 
 
 %% Buffered
-filename = 'file:///home/brandon/GIS/Greenland/JakCosmo/data/vector/BlockVolume-05Clip.shp';
+filename = '~/data/vector/BlockVolume-05Clip.shp';
 
 data = shaperead(filename);
 [numID, ~] = size(data);
