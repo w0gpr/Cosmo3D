@@ -16,57 +16,41 @@ A short, one paragraph description of the project goes here.
 
 This project is an open project, and contributions are welcome from any individual.  All contributors to this project are bound by a [code of conduct](CODE_OF_CONDUCT.md).  Please review and follow this code of conduct as part of your contribution.
 
-  * [Brandon Graham](https://www.usgs.gov/staff-profiles/brandon-lars-graham) [![orcid](https://img.shields.io/badge/orcid-0000--0002--7197--0413-brightgreen.svg)](https://orcid.org/0000-0002-7197-0413)
+  * [Brandon Graham](https://www.usgs.gov/staff-profiles/brandon-lars-graham) [![orcid](https://img.shields.io/badge/orcid-0000--0002--7197--0413-brightgreen.svg)](https://orcid.org/0000-0002-7197-0413)  
 
 
-### Tips for Contributing
+### Tips for Contributing  
 
-Issues and bug reports are always welcome.  Code clean-up, and feature additions can be done either through pull requests to [project forks]() or branches.
+Issues and bug reports are always welcome.  Code clean-up, and feature additions can be done either through pull requests to [project forks]() or branches.  
 
-All products of the Throughput Annotation Project are licensed under an [MIT License](LICENSE) unless otherwise noted.
+All products of the Throughput Annotation Project are licensed under an [MIT License](LICENSE) unless otherwise noted.  
 
-## How to use this repository
+## How to use this repository  
 
 The primary Matlab scripts to call directly are:  
 [JakMCMCCall.m](src/JakMCMCCall.m) This is the main Markov Chain Monte Carlo simulation to do the 3D model. This call the associated data, scripts, and functions:  
     [JakMCMC.m](src/JakMCMC.m)  
     [Camp3Samples](data/Input/Camp3Samples.csv)  
     [surfaceModelSingle.m](src/surfaceModelSingle.m) This is used to take inflection point inputs for the surface model and simulated abrasion depth and create a surface model for forward modeling of cosmic ray bombardment.  
-    [cosmoDistribution.m](src/cosmoDistribution.m) This generates the randomized incoming rays based on the distribution described in Gosse and Philips (2001).
+    [cosmoDistribution.m](src/cosmoDistribution.m) This generates the randomized incoming rays based on the distribution described in Gosse and Philips (2001).   
 
 
 It also relies on the MCMCStat model which is maintained at :[MJLaine](https://mjlaine.github.io/mcmcstat/)  
 
-[JakCosmo3DFull.m](src/JakCosmo3DFull.m) Is designed to test and specify initial parameters, and was used to develop the MCMC model simulation and inversion.
+[JakCosmo3DFull.m](src/JakCosmo3DFull.m) Is designed to test and specify initial parameters, and was used to develop the MCMC model simulation and inversion.  
 
-[JakBinaryTestShielding](src/JakBinaryTestShielding.m) is written to determine if the estimated shielding factor from the measured concentrations and known exposure history matches the measured shielding in the field.
+[JakBinaryTestShielding](src/JakBinaryTestShielding.m) is written to determine if the estimated shielding factor from the measured concentrations and known exposure history matches the measured shielding in the field.  
 
-[individualShieldingDepth](src/individualShieldingDepth.m) is a stand alone version that can be used to directly solve the depth of erosion of a measured cosmogenic nuclide sample with a known exposure history.
+[individualShieldingDepth](src/individualShieldingDepth.m) is a stand alone version that can be used to directly solve the depth of erosion of a measured cosmogenic nuclide sample with a known exposure history.  
 
-[RoseDiagram](src/RoseDiagram.m) is used to generate the Rose Diagram figures based on the data collected in [JAK2018Camp3Flow](data/Input/JAK2018Camp3Flow.csv). 
-
-
-[skyline](src/skyline.m) This is the shielding factor matlab script written by Greg Balco (2006) and is distributed under the GNU General Public License, version 2, and is used in determining shielding factor in [JakBinaryTestShielding](src/JakBinaryTestShielding.m).
+[RoseDiagram](src/RoseDiagram.m) is used to generate the Rose Diagram figures based on the data collected in [JAK2018Camp3Flow](data/Input/JAK2018Camp3Flow.csv).  
 
 
+[skyline](src/skyline.m) This is the shielding factor matlab script written by Greg Balco (2006) and is distributed under the GNU General Public License, version 2, and is used in determining shielding factor in [JakBinaryTestShielding](src/JakBinaryTestShielding.m).  
 
-### Workflow Overview
+[GreenlandBedrockDEM](data/GIS/Greenlandbedrocksite20180902-DEM.tif) is the Structure from Motion Digital Elevation Model used as the surface model in QGIS workflows.  
 
-Th project uses X core information, manages it and passes our some stuff.
 
 ### System Requirements
 
 This project is developed using Matlab 2020a.  It runs on Linux, but should also run on Windows and Mac. Older version of Matlab will likely work, however there are no guarantees.
-
-### Data Requirements
-
-The project pulls data from (?).
-
-### Key Outputs
-
-This project generates (an API, some log files, what?)
-
-## Metrics
-
-This project is to be evaluated using the following metrics. . .
-
