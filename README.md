@@ -1,5 +1,8 @@
 [![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 [![NSF-1504267](https://img.shields.io/badge/NSF-1504267-blue.svg)](https://nsf.gov/awardsearch/showAward?AWD_ID=1504267) [![NSF-1503959](https://img.shields.io/badge/NSF-1503959-blue.svg)](https://nsf.gov/awardsearch/showAward?AWD_ID=1503959)
+[![DOI](https://zenodo.org/badge/629196420.svg)](https://zenodo.org/badge/latestdoi/629196420)
+
+
 
 # Cosmo3D
 
