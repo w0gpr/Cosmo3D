@@ -22,7 +22,7 @@ age = sortrows(data,2);
 age1 = age(age(:,2)==1,1);
 age2 = age(age(:,2)==2,1);
 age3 = age(age(:,2)==3,1);
-age4 = age(age(:,2)==4,1);
+age4 = age(age(:,2)==4,1);      % Indicates picked from SfM DEM
 
 %% This sorts the data by the type of mark
 mark = sortrows(data,3);
@@ -30,9 +30,9 @@ Chat = mark(mark(:,3)==1,1);
 ChatTrain = mark(mark(:,3)==2,1);
 Striae = mark(mark(:,3)==3,1);
 Gouge = mark(mark(:,3)==4,1);
-Pluck = mark(mark(:,3)==5,1);
+Pluck = mark(mark(:,3)==5,1);   % Picked from the SfM DEM
 Questionable = mark(mark(:,3)==0,1);
-Joint = mark(mark(:,3)==6,1);
+Joint = mark(mark(:,3)==6,1);   % Picked from the SfM DEM
 Data = data;
 data = data(data(:,3)~=6,1);
 
